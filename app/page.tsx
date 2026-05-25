@@ -1,44 +1,34 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from 'next/navigation';
 
 export default function HomePage() {
   // MOCK auth state (replace later with real auth)
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const user = { name: "Alex" }; 
+  const router = useRouter();
 
   return (
     <main className="min-h-screen bg-[#f5e0b7] text-[#4a4542] px-6 py-10">
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <header className="flex items-center justify-between mb-10">
-          <h1 className="text-2xl font-semibold tracking-wide">
-            myShelf
+          <h1 className="text-3xl font-semibold tracking-wide">
+            MyShelf
           </h1>
-
-          <div className="flex gap-2">
-            <button
-              onClick={() => setIsLoggedIn(!isLoggedIn)}
-              className="border px-5 py-2 rounded-full text-base font-medium hover:bg-black/5 transition"
-            >
-              {isLoggedIn ? "Log out" : "Log in"}
-            </button>
-          </div>
         </header>
 
         {/* Hero */}
-        <section className="mb-10">
-          <h2 className="text-3xl md:text-4xl font-bold mb-2">
-            {isLoggedIn ? `Hey ${user.name}!` : "Welcome!"}
-          </h2>
-          <p className="text-sm md:text-base opacity-80 max-w-xl leading-relaxed">
-            Search and save your favourite books or check out what your friends are reading!
-          </p>
+        {/* Hero */}
+        <section className="mb-10 bg-[#D6BA73]/70 border border-[#d6ba73]/40 rounded-3xl px-6 py-6 shadow-sm">
+            <h2 className="text-3xl md:text-4xl font-bold mb-3">
+                {isLoggedIn ? `Hey ${user.name}!` : "Welcome!"}
+            </h2>
 
-          <button className="flex items-center mt-4 gap-2 bg-[#d6ba73] text-white px-6 py-3 rounded-full shadow-md hover:shadow-lg transition hover:scale-105 active:scale-95">
-            <span className="text-lg">＋</span>
-            <span className="font-medium">Add Book</span>
-          </button>
+            <p className="text-sm md:text-base opacity-80 max-w-xl leading-relaxed">
+                Search and save your favourite books or check out what your friends are reading!
+            </p>
         </section>
 
         {/* Search */}
@@ -83,8 +73,15 @@ export default function HomePage() {
             </div>
           </section>
         ) : (
-          <div className="text-center mt-10 opacity-70">
-            🔒 Log in to view your books
+          <div className="flex justify-center gap-2">
+            <button
+              onClick={() => {
+                router.push("/auth/login")
+              }}
+              className="bg-[#8bbf9f] text-white px-5 py-3 rounded-full shadow-lg hover:scale-105 transition"
+            >
+              Log in to see your shelf
+            </button>
           </div>
         )}
 
