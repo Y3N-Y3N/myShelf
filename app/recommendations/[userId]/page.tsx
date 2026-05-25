@@ -56,56 +56,55 @@ export default function RecommendationsPage() {
 
   return (
     <main className="min-h-screen bg-[#f5e0b7] text-[#4a4542] px-6 py-10">
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-3xl text-left">
 
         {/* Header */}
         <header className="mb-10">
-          <h1 className="text-3xl font-bold mb-2">
+          <h1 className="text-3xl text-left font-bold mb-2">
             Recommendations for Steve
           </h1>
-          <p className="text-medium opacity-70">
+          <p className="text-medium text-left opacity-70">
             Books based on your reading taste
           </p>
         </header>
+      </div>
 
         {/* Book List */}
-        <div className="space-y-4">
-          {books.map((book) => (
+        <section className="mt-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+            {books.map((book) => (
             <div
-              onClick={() => {
-                router.push(`/books/details/${book.title}`)
-              }}
-              key={book.id}
-              className="bg-white/60 backdrop-blur border border-[#d6ba73]/30 rounded-2xl p-5 shadow-sm hover:shadow-md transition"
+                key={book.id}
+                onClick={() => router.push(`/books/details/${book.id}`)}
+                className="cursor-pointer bg-white/60 backdrop-blur border border-[#d6ba73]/30 rounded-2xl p-5 shadow-sm hover:shadow-md hover:-translate-y-1 transition"
             >
-              {/* Title */}
-              <h2 className="text-lg font-semibold mb-1">
+                {/* Title */}
+                <h2 className="text-lg font-semibold text-[#4a4542] mb-1">
                 {book.title}
-              </h2>
+                </h2>
 
-              {/* Meta info */}
-              <p className="text-sm opacity-70 mb-3">
+                {/* Author */}
+                <p className="text-sm opacity-70 mb-3">
                 {book.author}
-              </p>
+                </p>
 
-              {/* Tags row */}
-              <div className="flex items-center gap-2 text-xs">
+                {/* Tags */}
+                <div className="flex items-center gap-2 text-xs flex-wrap">
                 <span className="px-3 py-1 rounded-full bg-[#8bbf9f]/20 text-[#4a4542]">
-                  {book.genre}
+                    {book.genre}
                 </span>
 
                 <span className="px-3 py-1 rounded-full bg-[#d6ba73]/30 text-[#4a4542]">
-                  {book.year}
+                    {book.year}
                 </span>
-              </div>
+                </div>
             </div>
-          ))}
+            ))}
         </div>
-
-      </div>
+        </section>
       <button
         onClick={() => router.push("/")}
-        className="absolute top-6 left-6 px-3 py-3 rounded-full bg-[#8bbf9f] border border-[#d6ba73]/30 text-sm text-white shadow-sm hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition"
+        className="absolute top-15 right-20 px-3 py-3 rounded-full bg-[#8bbf9f] border border-[#d6ba73]/30 text-sm text-white shadow-sm hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition"
       >
         Back to menu
       </button>

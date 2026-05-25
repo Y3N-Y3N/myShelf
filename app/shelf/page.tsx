@@ -48,27 +48,27 @@ const mockBooks: Book[] = [
     status: "saved",
   },
 ];
-
 export default function MyBooksPage() {
   const [filter, setFilter] = useState<"all" | BookStatus>("all");
 
   const filteredBooks = useMemo(() => {
     if (filter === "all") return mockBooks;
-
     return mockBooks.filter((book) => book.status === filter);
   }, [filter]);
 
   const router = useRouter();
+
   return (
     <main className="min-h-screen bg-[#f5e0b7] text-[#4a4542] px-6 py-10">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-5xl mx-auto">
+
         {/* Header */}
-        <section className="mb-10">
+        <section className="mb-10 text-left">
           <h1 className="text-3xl font-bold mb-2">
             My Shelf
           </h1>
 
-          <p className="text-medium opacity-70">
+          <p className="text-sm opacity-70">
             Track the books you’ve saved and finished reading
           </p>
         </section>
@@ -93,48 +93,50 @@ export default function MyBooksPage() {
           ))}
         </div>
 
-        {/* Books List */}
-        <div className="space-y-4">
+        {/* GRID BOOKS (refactored design) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+
           {filteredBooks.map((book) => (
             <div
               key={book.id}
-              className="bg-white/60 backdrop-blur border border-[#d6ba73]/30 rounded-2xl p-5 shadow-sm hover:shadow-md transition"
+              onClick={() =>
+                router.push(`/books/details/${book.id}`)
+              }
+              className="cursor-pointer bg-white/60 backdrop-blur border border-[#d6ba73]/30 rounded-2xl p-5 shadow-sm hover:shadow-md hover:-translate-y-1 transition"
             >
-              <div className="flex items-start justify-between gap-4">
-                {/* Left Side */}
-                <div>
-                  <h2 className="text-lg font-semibold mb-1">
-                    {book.title}
-                  </h2>
+              {/* Title */}
+              <h2 className="text-lg font-semibold text-[#4a4542] mb-1">
+                {book.title}
+              </h2>
 
-                  <p className="text-sm opacity-70 mb-3">
-                    {book.author}
-                  </p>
+              {/* Author */}
+              <p className="text-sm opacity-70 mb-3">
+                {book.author}
+              </p>
 
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="px-3 py-1 rounded-full text-xs bg-[#8bbf9f]/20">
-                      {book.genre}
-                    </span>
+              {/* Tags */}
+              <div className="flex items-center gap-2 flex-wrap text-xs">
+                <span className="px-3 py-1 rounded-full bg-[#8bbf9f]/20 text-[#4a4542]">
+                  {book.genre}
+                </span>
 
-                    <span className="px-3 py-1 rounded-full text-xs bg-[#d6ba73]/30">
-                      {book.year}
-                    </span>
-                  </div>
-                </div>
+                <span className="px-3 py-1 rounded-full bg-[#d6ba73]/30 text-[#4a4542]">
+                  {book.year}
+                </span>
+              </div>
 
-                {/* Status Badge */}
-                <div>
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium
-                      ${
-                        book.status === "read"
-                          ? "bg-[#8bbf9f] text-white"
-                          : "bg-[#d6ba73] text-white"
-                      }`}
-                  >
-                    {book.status === "read" ? "Read" : "Saved"}
-                  </span>
-                </div>
+              {/* Status */}
+              <div className="mt-4">
+                <span
+                  className={`text-xs px-3 py-1 rounded-full font-medium
+                    ${
+                      book.status === "read"
+                        ? "bg-[#8bbf9f] text-white"
+                        : "bg-[#d6ba73] text-white"
+                    }`}
+                >
+                  {book.status === "read" ? "Read" : "Saved"}
+                </span>
               </div>
             </div>
           ))}
@@ -147,9 +149,11 @@ export default function MyBooksPage() {
           </div>
         )}
       </div>
+
+      {/* Back button */}
       <button
         onClick={() => router.push("/")}
-        className="absolute top-6 left-6 px-3 py-3 rounded-full bg-[#8bbf9f] border border-[#d6ba73]/30 text-sm text-white shadow-sm hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition"
+        className="absolute top-15 right-20 px-3 py-3 rounded-full bg-[#8bbf9f] border border-[#d6ba73]/30 text-medium text-white shadow-sm hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition"
       >
         Back to menu
       </button>
