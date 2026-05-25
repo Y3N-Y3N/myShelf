@@ -1,0 +1,43 @@
+@import url("https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,300,400&display=swap");
+@import "tailwindcss";
+
+/* Theme tokens */
+@tailwind {
+  --color-background: #f5e0b7;
+  --color-foreground: #857e7b;
+  --color-primary: #d6ba73;
+  --color-accent: #8bbf9f;
+}
+
+/* Dark mode variant */
+@custom-variant dark (&:is(.dark *));
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: "Satoshi", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Focus styling */
+@layer base {
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-emerald-500;
+  }
+}
+
+/* Components */
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-lg border transition hover:opacity-80;
+  }
+
+  .btn-primary {
+    @apply bg-[var(--color-primary)] text-white;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
