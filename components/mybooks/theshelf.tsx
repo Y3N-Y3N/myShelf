@@ -50,14 +50,31 @@ const mockBooks: Book[] = [
 ];
 export default function MyBooksPage() {
   const [filter, setFilter] = useState<"all" | BookStatus>("all");
-
+  const [search, setSearch] = useState("");
   const filteredBooks = useMemo(() => {
-    if (filter === "all") return mockBooks;
-    return mockBooks.filter((book) => book.status === filter);
-  }, [filter]);
+    
 
+    const bookSelection = mockBooks.filter((book) => book.status === filter);
+    if (filter === "all") {
+        return mockBooks;
+    }
+    const query = search.toLowerCase();
+
+    if (!query) {
+        return bookSelection;
+    } else {
+        return bookSelection.filter((book) => {
+
+            return (
+                book.title.toLowerCase().includes(query) ||
+                book.author.toLowerCase().includes(query) ||
+                book.genre.toLowerCase().includes(query)
+            );
+        })
+    }
+  }, [filter, search]);
+  
   const router = useRouter();
-
   return (
     <main className="min-h-screen bg-[#f5e0b7] text-[#4a4542] px-6 py-10">
       <div className="max-w-5xl mx-auto">
@@ -92,7 +109,20 @@ export default function MyBooksPage() {
             </button>
           ))}
         </div>
+        
+        <div className="mb-8">
+  <div className="flex items-center bg-white/70 border border-[#d6ba73]/40 rounded-2xl px-4 py-3 shadow-sm">
+    
+    <input
+      value={search}
+      onChange={(e) => setSearch(e.target.value)}
+      placeholder="Search books, authors, genres..."
+      className="w-full bg-transparent outline-none text-sm"
+    />
 
+    <span className="text-[#8bbf9f] text-sm">🔍</span>
+  </div>
+</div>
         {/* GRID BOOKS (refactored design) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
 
@@ -100,7 +130,7 @@ export default function MyBooksPage() {
             <div
               key={book.id}
               onClick={() =>
-                router.push(`/books/details/${book.id}`)
+                router.push(`/bookDetails/${book.title}`)
               }
               className="cursor-pointer bg-white/60 backdrop-blur border border-[#d6ba73]/30 rounded-2xl p-5 shadow-sm hover:shadow-md hover:-translate-y-1 transition"
             >

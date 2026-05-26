@@ -75,7 +75,7 @@ export default function RecommendationsPage() {
             {books.map((book) => (
             <div
                 key={book.id}
-                onClick={() => router.push(`/books/details/${book.id}`)}
+                onClick={() => router.push(`/bookDetails/${book.title}`)}
                 className="cursor-pointer bg-white/60 backdrop-blur border border-[#d6ba73]/30 rounded-2xl p-5 shadow-sm hover:shadow-md hover:-translate-y-1 transition"
             >
                 {/* Title */}
