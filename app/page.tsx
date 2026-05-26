@@ -32,7 +32,11 @@ export default function HomePage() {
             </h2>
 
             <p className="text-sm md:text-base opacity-80 max-w-xl leading-relaxed">
-                Search and save your favourite books or check out what your friends are reading!
+                Search and save your favourite books or check out what your friends are reading
+            </p>
+
+            <p className="text-sm md:text-base opacity-80 max-w-xl leading-relaxed">
+                {isLoggedIn ? <b>Welcome back :D</b> : <b>Login to save books and access book recommendations</b> }
             </p>
         </section>
 
@@ -47,7 +51,7 @@ export default function HomePage() {
         </div>
 
         
-        <div className="flex justify-center gap-2">
+        <div className="flex justify-center gap-10">
         <button
             onClick={() => {
             if (isLoggedIn) {
@@ -58,18 +62,16 @@ export default function HomePage() {
             }}
             className="bg-[#8bbf9f] text-white px-5 py-3 rounded-full shadow-lg hover:scale-105 transition"
         >
-            {isLoggedIn ? "Continue to shelf ->": "Log in to see your shelf"}
+            {isLoggedIn ? "Continue to shelf ->": "Login"}
         </button>
+        {isLoggedIn &&
+          <button onClick={() => { router.push("/recommendations/12345") } }
+            className="bg-[#8bbf9f] text-white px-5 py-3 rounded-full shadow-lg hover:scale-105 transition">
+              Find me a book!
+          </button>
+        }
         </div>
         
-
-        {/* Floating CTA */}
-        <div className="fixed bottom-6 right-6">
-          <button onClick={() => { router.push("/recommendations/12345") } }
-          className="bg-[#8bbf9f] text-white px-5 py-3 rounded-full shadow-lg hover:scale-105 transition">
-            Find me a book
-          </button>
-        </div>
       </div>
     </main>
   );
