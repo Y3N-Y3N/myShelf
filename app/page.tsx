@@ -26,18 +26,35 @@ export default function HomePage() {
         </header>
 
         {/* Hero */}
-        <section className="mb-10 bg-[#D6BA73]/70 border border-[#d6ba73]/40 rounded-3xl px-6 py-6 shadow-sm">
+        <section className="mb-10 bg-[#D6BA73]/70 border border-[#d6ba73]/40 rounded-3xl px-6 py-6 shadow-sm flex items-center justify-between gap-6">
+                  
+          {/* Left content */}
+          <div className="flex-1">
             <h2 className="text-3xl md:text-4xl font-bold mb-3">
-                {isLoggedIn ? `Hey ${user.name}!` : "Welcome!"}
+              {isLoggedIn ? `Hey ${user.name}!` : "Welcome!"}
             </h2>
 
             <p className="text-sm md:text-base opacity-80 max-w-xl leading-relaxed">
-                Search and save your favourite books or check out what your friends are reading
+              Search and save your favourite books or check out what your friends are reading
             </p>
 
-            <p className="text-sm md:text-base opacity-80 max-w-xl leading-relaxed">
-                {isLoggedIn ? <b>Welcome back :D</b> : <b>Login to save books and access book recommendations</b> }
+            <p className="text-sm md:text-base opacity-80 max-w-xl leading-relaxed mt-2">
+              {isLoggedIn ? (
+                <b>Welcome back :D</b>
+              ) : (
+                <b>Login to save books and access book recommendations</b>
+              )}
             </p>
+          </div>
+
+          {/* Right image */}
+          <div className="hidden md:block">
+            <img
+              src="/vecteezy_coffee.png"
+              className="w-40 h-40 object-contain"
+            />
+          </div>
+
         </section>
 
         {/* Search */}
