@@ -1,28 +1,19 @@
-# =========================
-# ENV FILES (NEVER COMMIT)
-# =========================
+# ENV FILE
 .env
 .env.*
 !.env.example
 
-# =========================
 # OS / IDE
-# =========================
 .DS_Store
 Thumbs.db
 .vscode/
 .idea/
 
-# =========================
 # LOGS
-# =========================
 *.log
 logs/
 
-# =========================
-# =========================
-# FRONTEND (Next.js)
-# =========================
+# FRONT END
 frontend/node_modules/
 frontend/.next/
 frontend/out/
@@ -39,9 +30,7 @@ frontend/.pnp
 frontend/.pnp.*
 frontend/.yarn/
 
-# =========================
-# BACKEND (FastAPI / Python)
-# =========================
+# BACKEND
 backend/venv/
 backend/__pycache__/
 backend/**/*.pyc
@@ -52,15 +41,11 @@ backend/.coverage/
 # SQLAlchemy / Alembic
 backend/alembic/versions/*.pyc
 
-# =========================
 # DEBUG FILES
-# =========================
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# =========================
-# SECURITY / KEYS
-# =========================
+# KEYS
 *.pem
