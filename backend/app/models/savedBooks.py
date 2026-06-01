@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy.orm import relationship
 from app.database.database import Base
 
 # a table of books saved from the API
@@ -15,5 +16,11 @@ class SavedBook(Base):
     author = Column(String)
     cover_url = Column(String, nullable=True)
 
-    status = Column(String, default="saved")  # saved, reading, finished
+    # status = saved, reading, finished
+    status = Column(String, default="saved")  
     rating = Column(Integer, nullable=True)
+
+    user = relationship(
+        "User",
+        back_populates="saved_books"
+    )

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Query
-from app.services.Gbooks import search_books
+from app.services.openlib import search_books
 
 router = APIRouter(prefix="/books", tags=["Books"])
 
