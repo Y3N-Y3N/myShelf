@@ -6,11 +6,11 @@ async def search_books(query: str, search_type: str, limit: int = 10):
     params = {}
 
     if search_type == "author":
-        params["q"] = f"inauthor:{query}"
+        params["author"] = query
     elif search_type == "book":
-        params["q"] = f"intitle:{query}"
+        params["title"] = query
     else:
-        params["q"] = query 
+        params["q"] = query
 
     params["maxResults"] = 10
     
