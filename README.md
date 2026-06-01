@@ -8,13 +8,13 @@ A social networking / book recommendation app which aims to demonstrate my integ
 - External APIS: [OpenLibrary API](https://openlibrary.org/developers/api)
 
 **Set Up**
-- ### 1. Prerequisites
+### 1. Prerequisites
 
 - [Node.js](https://nodejs.org/en/) (v18 or higher recommended)
 - [PostGresQL](https://www.postgresql.org/download/) installed and running locally.
 - [Python3](https://www.python.org/downloads/) (v3.11 or higher recommended)
 
-- ### 2. Environment Variables
+### 2. Environment Variables
 Create a `.env` file in the root directory of your project and set the following environment variables:
 
 ```env
@@ -24,8 +24,8 @@ DATABASE_URL=postgresql://postgres:YOUR_PASSWORD@localhost:5432/MyShelf
 # Frontend
 NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
-- ### 3. Install dependencies
-Navigate to the frontend folder and install node modules
+### 3. Install dependencies
+Navigate to the frontend folder and install node modules:
 
 ```bash
 npm install
