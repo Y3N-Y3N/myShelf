@@ -9,5 +9,5 @@ async def search_books_endpoint(
     type: str = "book",
     limit: int = 10
 ):
-    return await search_books(q, type)
+    return await search_books(q, type, 10)
 

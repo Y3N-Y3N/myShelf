@@ -1,8 +1,8 @@
 import httpx
 
-GOOGLE_BOOKS_URL = "https://www.googleapis.com/books/v1/volumes"
+OPEN_LIBRARY_URL = "https://openlibrary.org/search.json"
 
-async def search_books(query: str, search_type: str):
+async def search_books(query: str, search_type: str, limit: int = 10):
     params = {}
 
     if search_type == "author":
@@ -16,20 +16,23 @@ async def search_books(query: str, search_type: str):
     
     # request the books
     async with httpx.AsyncClient() as client:
-        res = await client.get(GOOGLE_BOOKS_URL, params=params)
+        res = await client.get(OPEN_LIBRARY_URL, params=params)
         data = res.json()
 
     results = []
 
     # returns a list of books which match the search
-    for item in data.get("items", []):
-        volume = item.get("volumeInfo", {})
-
+    for item in data.get("docs", [])[:limit]:
         results.append({
-            "external_id": item.get("id"),
-            "title": volume.get("title"),
-            "author": ", ".join(volume.get("authors", [])) if volume.get("authors") else None,
-            "cover_url": volume.get("imageLinks", {}).get("thumbnail")
+            "external_id": item.get("key"),
+            "title": item.get("title"),
+            "author": item.get("author_name", [None])[0] if item.get("author_name") else None,
+            "cover_url": (
+                f"https://covers.openlibrary.org/b/id/{item['cover_i']}-M.jpg"
+                if item.get("cover_i")
+                else None
+            )
         })
+
 
     return results
