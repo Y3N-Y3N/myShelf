@@ -1,23 +1,25 @@
 from pydantic import BaseModel
+from typing import Optional
 
-# from frontend to backend payload
-class BookCreate(BaseModel):
+class SavedBookCreate(BaseModel):
+    external_id: str
     title: str
     author: str
-    genre: str | None = None
+    cover_url: Optional[str] = None
 
-# from backend to frontend payload
-class BookResponse(BaseModel):
+class SavedBookUpdate(BaseModel):
+    status: str | None = None
+    rating: int | None = None
+
+class SavedBookResponse(BaseModel):
     id: int
+    external_id: str
     title: str
     author: str
-    genre: str | None = None
+    cover_url: str | None
+    status: str
+    rating: int | None
 
     class Config:
         from_attributes = True
-
-# from frontend to backend
-class BookUpdate(BaseModel):
-    title: str | None = None
-    author: str | None = None
-    genre: str | None = None
+        

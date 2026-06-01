@@ -1,12 +1,19 @@
-from typing import ForwardRef
-
-from sqlalchemy import Column, Integer, Table, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey
 from app.database.database import Base
 
-saved_books = Table(
-    "saved_books",
-    Base.metadata,
-    Column("user_id", ForeignKey("users.id")),
-    Column("book_id", ForeignKey("books.id")),
-)
-    
+# a table of books saved from the API
+class SavedBook(Base):
+    __tablename__ = "saved_books"
+
+    id = Column(Integer, primary_key=True)
+
+    user_id = Column(Integer, ForeignKey("users.id"))
+
+    external_id = Column(String, index=True)
+
+    title = Column(String)
+    author = Column(String)
+    cover_url = Column(String, nullable=True)
+
+    status = Column(String, default="saved")  # saved, reading, finished
+    rating = Column(Integer, nullable=True)
