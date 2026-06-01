@@ -11,7 +11,7 @@ A social networking / book recommendation app which aims to demonstrate my integ
 ### 1. Prerequisites
 
 - [Node.js](https://nodejs.org/en/) (v18 or higher recommended)
-- [PostGresQL](https://www.postgresql.org/download/) installed and running locally.
+- [PostgresQL](https://www.postgresql.org/download/) installed and running locally.
 - [Python3](https://www.python.org/downloads/) (v3.11 or higher recommended)
 
 ### 2. Environment Variables
@@ -39,8 +39,6 @@ Then navigate to the backend folder. Start python virtual environment and instal
 
 ```bash
 python3 -m venv venv
-```
-```bash
 pip install fastapi uvicorn sqlalchemy psycopg2-binary httpx python-dotenv
 ```
 Start the backend server from the backend folder:
