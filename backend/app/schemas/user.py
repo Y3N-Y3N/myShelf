@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr
 
-# payload from frontend
+# payload from frontend to backend
 class UserCreate(BaseModel):
     name: str
     email: EmailStr

@@ -1,20 +1,13 @@
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
-
-from app.database.database import get_db
-from app.models.book import Book
-from app.schemas.book import BookCreate, BookResponse
+from fastapi import APIRouter, Query
+from app.services.Gbooks import search_books
 
 router = APIRouter(prefix="/books", tags=["Books"])
 
-# POST /books
-@router.post("/", response_model=BookResponse)
-def createBook(book: BookCreate, db: Session = Depends(get_db)):
-    # initialise the book payload
-    new_book = Book(**book.model_dump())
+@router.get("/search")
+async def search_books_endpoint(
+    q: str = Query(..., min_length=1),
+    type: str = "book",
+    limit: int = 10
+):
+    return await search_books(q, type)
 
-    db.add(new_book)
-    db.commit()
-    db.refresh()
-
-    return new_book
