@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import books, saved_books
+from app.routers import books, saved_books, users
 from app.database.database import Base, engine
 from app.models import user, savedBooks
 
@@ -20,4 +20,6 @@ def root():
 
 app.include_router(books.router)
 app.include_router(saved_books.router)
+app.include_router(users.router)
+
 Base.metadata.create_all(bind=engine)

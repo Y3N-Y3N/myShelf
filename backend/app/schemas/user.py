@@ -6,12 +6,21 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str
 
+# login information given for validations
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+
 # payload from backend to frontend
 class UserResponse(BaseModel):
     id: int
-    name: str
+    username: str
     email: EmailStr
 
     class Config:
         from_attributes = True
 
+# access info granted
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str
