@@ -39,7 +39,7 @@ Then navigate to the backend folder. Start python virtual environment and instal
 
 ```bash
 python3 -m venv venv
-pip install fastapi uvicorn sqlalchemy psycopg2-binary httpx python-dotenv pydantic email-validator passlib[bcrypt] python-jose[cryptography]
+pip install fastapi uvicorn sqlalchemy psycopg2-binary httpx python-dotenv pydantic email-validator passlib[bcrypt]==1.7.4 bcrypt==4.0.1 python-jose[cryptography]
 ```
 Start the backend server from the backend folder:
 ```bash
