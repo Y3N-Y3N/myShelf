@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relationship
 from app.database.database import Base
 
@@ -9,7 +9,7 @@ class SavedBook(Base):
     id = Column(Integer, primary_key=True)
 
     user_id = Column(Integer, ForeignKey("users.id"))
-
+  
     external_id = Column(String, index=True)
 
     title = Column(String)
@@ -24,3 +24,11 @@ class SavedBook(Base):
         "User",
         back_populates="saved_books"
     )
+
+    __table_args__ = (
+    UniqueConstraint(
+        "user_id",
+        "external_id",
+        name="unique_user_book"
+    ),
+)

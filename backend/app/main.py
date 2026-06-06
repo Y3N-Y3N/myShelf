@@ -4,7 +4,10 @@ from app.routers import books, saved_books, users
 from app.database.database import Base, engine
 from app.models import user, savedBooks
 
+
 app = FastAPI()
+
+Base.metadata.create_all(bind=engine)
 
 app.add_middleware(
     CORSMiddleware,

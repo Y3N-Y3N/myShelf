@@ -14,7 +14,7 @@ class UserLogin(BaseModel):
 # payload from backend to frontend
 class UserResponse(BaseModel):
     id: int
-    username: str
+    name: str
     email: EmailStr
 
     class Config:

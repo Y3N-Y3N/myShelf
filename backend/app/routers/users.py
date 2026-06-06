@@ -2,28 +2,22 @@ from fastapi import APIRouter
 from fastapi import Depends
 from fastapi import HTTPException
 
+from app.core.security import hash_password, verify_password
 from sqlalchemy.orm import Session
 from app.database.database import get_db
 from app.models.user import User
+from app.core.auth import create_access_token
 from app.schemas.user import (
     UserCreate,
-    UserResponse
-)
-
-from app.core.security import hash_password
-from app.schemas.user import (
+    UserResponse,
     UserLogin,
     TokenResponse
 )
-
-from app.core.security import verify_password
-from app.core.auth import create_access_token
 
 router = APIRouter(
     prefix="/users",
     tags=["Users"]
 )
-
 
 @router.post(
     "/register",
@@ -33,7 +27,10 @@ def register_user(
     user: UserCreate,
     db: Session = Depends(get_db)
 ):
-
+    print("PASSWORD RECEIVED:", user.password)
+    print("TYPE:", type(user.password))
+    print("LENGTH:", len(user.password))
+    
     existing_user = (
         db.query(User)
         .filter(User.email == user.email)
@@ -47,7 +44,7 @@ def register_user(
         )
 
     new_user = User(
-        username=user.username,
+        name=user.name,
         email=user.email,
         password_hash=hash_password(
             user.password
