@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 type Book = {
   external_id: string;
@@ -14,6 +15,7 @@ export default function SearchPage() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Book[]>([]);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const searchBooks = async () => {
     if (!query.trim()) return;
@@ -53,6 +55,11 @@ export default function SearchPage() {
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                searchBooks();
+              }
+            }}
             placeholder="Search books, authors..."
             className="flex-1 px-4 py-3 rounded-2xl bg-white/70 border border-[#d6ba73]/40 outline-none focus:border-[#8bbf9f]"
           />
@@ -74,6 +81,7 @@ export default function SearchPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {results.map((book) => (
             <div
+              onClick={() => router.push(`/bookDetails/${book.external_id.replace("/works", "")}`)}
               key={book.external_id}
               className="flex gap-4 bg-white/70 border border-[#d6ba73]/40 rounded-2xl p-4 shadow-sm hover:shadow-md transition"
             >
@@ -106,10 +114,6 @@ export default function SearchPage() {
                     {book.genre || "Unknown Genre"}
                   </p>
                 </div>
-
-                <button className="text-xs mt-3 bg-[#8bbf9f] text-white px-3 py-1 rounded-full w-fit hover:scale-105 transition">
-                  Add to shelf
-                </button>
               </div>
             </div>
           ))}

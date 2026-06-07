@@ -21,5 +21,5 @@ export async function generateMetadata({
 
 export default async function bookDetails({ params }: Props) {
   const givenBook = await params;
-  return <BookDetailsPage givenBook={givenBook.book}/>
+  return <BookDetailsPage id={givenBook.book}/>
 }

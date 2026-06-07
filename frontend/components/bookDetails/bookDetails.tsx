@@ -1,31 +1,69 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 type Props = {
-  givenBook: string;
+  id: string;
 };
 
-export default function BookDetailsPage({ givenBook }: Props) {
+export default function BookDetailsPage({ id }: Props) {
   const router = useRouter();
-
-  // Mock book data
-  const book = {
-    title: givenBook.replace("%20", " "),
-    author: "James Clear",
-    category: "Self-Help",
-    year: 2018,
-    description:
-      "Atomic Habits explores how tiny daily improvements and systems can create remarkable long-term growth. The book focuses on building good habits, breaking bad ones, and mastering consistent behaviour.",
-    reviews: [
-      "A genuinely motivating and practical read.",
-      "Easy to understand and surprisingly actionable.",
-      "One of the best productivity books I’ve read.",
-    ],
-  };
-
+  const [book, setBook] = useState<any>(null);
   const [status, setStatus] = useState("saved");
+  const [name, setName] = useState<any>(null);
+
+  async function getAuthorName(authorKey: string) {
+    if (!authorKey) return "Unknown Author";
+
+    const res = await fetch(`https://openlibrary.org${authorKey}.json`);
+    const data = await res.json();
+
+    return data?.name || "Unknown Author";
+  }
+
+  function mapOpenLibraryBook(data: any) {
+    return {
+      title: data.title || "Unknown Title",
+
+      author:
+        getAuthorName(data.authors?.[0]?.author?.key) ||
+        "Unknown Author",
+
+      category:
+        data.subjects?.[0] || "General",
+
+      year: data.created?.value
+        ? new Date(data.created.value).getFullYear()
+        : "Unknown",
+
+      description:
+        "No description available from Open Library. This is a placeholder summary for display purposes.",
+
+      cover_url: data.covers?.[0]
+        ? `https://covers.openlibrary.org/b/id/${data.covers[0]}-L.jpg`
+        : null
+    };
+  }
+  
+  useEffect(() => {
+    async function fetchBook() {
+      const res = await fetch(
+        `https://openlibrary.org/works/${id}.json`
+      );
+
+      const data = await res.json();
+      console.log(data)
+      setBook(mapOpenLibraryBook(data));
+    }
+
+    fetchBook();
+  }, [id]);
+
+  if (!book) {
+    return;
+  }
+
 
   return (
     <main className="min-h-screen bg-[#f5e0b7] text-[#4a4542] px-6 py-10">
@@ -47,10 +85,12 @@ export default function BookDetailsPage({ givenBook }: Props) {
             {/* Left Side */}
             <div>
               {/* Cover */}
-              <div className="h-[360px] rounded-3xl bg-gradient-to-br from-[#8bbf9f]/60 to-[#d6ba73]/50 shadow-sm flex items-end p-5">
-                <h1 className="text-2xl font-bold text-white leading-tight">
-                  {book.title}
-                </h1>
+              <div className="h-[360px] rounded-3xl overflow-hidden shadow-sm">
+                <img
+                  src={book?.cover_url || "/fallback-cover.jpg"}
+                  alt={book?.title || "Book cover"}
+                  className="w-full h-full object-cover"
+                />
               </div>
 
               {/* Actions */}
@@ -110,7 +150,7 @@ export default function BookDetailsPage({ givenBook }: Props) {
                 </p>
               </section>
 
-              {/* Reviews */}
+              {/* Reviews
               <section>
                 <h2 className="text-xl font-semibold mb-4">
                   Reviews
@@ -128,7 +168,7 @@ export default function BookDetailsPage({ givenBook }: Props) {
                     </div>
                   ))}
                 </div>
-              </section>
+              </section> */}
 
             </div>
           </div>
