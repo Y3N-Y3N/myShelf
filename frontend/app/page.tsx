@@ -1,12 +1,47 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
+
+
 
 export default function HomePage() {
   // MOCK auth state (replace later with real auth)
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const user = { name: "Alex" }; 
+  const [name, setName] = useState("");
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+  };
+
+  useEffect(() => {
+    async function getUser() {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        setIsLoggedIn(false)
+        return;
+      }
+      
+      console.log("Token:", token);
+
+      const res = await fetch("http://localhost:8000/users/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) return;
+
+      const curr_user = await res.json();
+      setIsLoggedIn(true);
+      setName(curr_user.name);
+    }
+
+    getUser();
+  }, []);
+  
   const router = useRouter();
 
   return (
@@ -17,12 +52,13 @@ export default function HomePage() {
           <h1 className="text-3xl font-semibold tracking-wide">
             MyShelf
           </h1>
-          <button
-              onClick={() => setIsLoggedIn(!isLoggedIn)}
-              className="bg-[#8bbf9f] text-white px-5 py-3 rounded-full shadow-lg hover:scale-105 transition"
-            >
-              {isLoggedIn ? "Logout": "Login"}
-          </button>
+          { isLoggedIn &&
+            <button
+                onClick={handleLogout}
+                className="bg-[#8bbf9f] text-white px-5 py-3 rounded-full shadow-lg hover:scale-105 transition"
+              >
+                Logout
+            </button> }
         </header>
 
         {/* Hero */}
@@ -31,7 +67,7 @@ export default function HomePage() {
           {/* Left content */}
           <div className="flex-1">
             <h2 className="text-3xl md:text-4xl font-bold mb-3">
-              {isLoggedIn ? `Hey ${user.name}!` : "Welcome!"}
+              {isLoggedIn ? `Hey ${name}!` : "Welcome!"}
             </h2>
 
             <p className="text-sm md:text-base opacity-80 max-w-xl leading-relaxed">

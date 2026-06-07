@@ -25,4 +25,3 @@ app.include_router(books.router)
 app.include_router(saved_books.router)
 app.include_router(users.router)
 
-Base.metadata.create_all(bind=engine)

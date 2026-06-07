@@ -9,13 +9,34 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // fake login for now
-    if (email && password) {
-      router.push("/");
-    }
+    const login = await fetch("http://localhost:8000/users/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      }, 
+      body: JSON.stringify({
+        email: email,
+        password: password
+      })
+    })
+
+    if (!login.ok) {
+      const error = await login.json();
+      console.log(error)
+      return;
+    } 
+    
+    const loginData = await login.json();
+
+    localStorage.setItem(
+      "token",
+      loginData.access_token
+    );
+
+    router.push("/")
   };
 
   return (

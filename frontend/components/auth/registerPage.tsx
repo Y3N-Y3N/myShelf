@@ -10,13 +10,52 @@ export default function SignUpPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSignUp = (e: React.FormEvent) => {
+  const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    const response = await fetch("http://localhost:8000/users/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      }, 
+      body: JSON.stringify({
+        name: name,
+        email: email,
+        password: password
+      })
+    })
+    
+    if (!response.ok) {
+      const error = await response.json();
+      console.log(error)
+      return;
+    } 
 
-    // fake signup for now
-    if (name && email && password) {
-      router.push("/");
-    }
+    const autoLogin = await fetch("http://localhost:8000/users/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      }, 
+      body: JSON.stringify({
+        email: email,
+        password: password
+      })
+    })
+
+    if (!autoLogin.ok) {
+      const error = await autoLogin.json();
+      console.log(error)
+      return;
+    } 
+
+    const loginData = await autoLogin.json();
+
+    localStorage.setItem(
+      "token",
+      loginData.access_token
+    );
+
+    router.push("/")
   };
 
   return (
