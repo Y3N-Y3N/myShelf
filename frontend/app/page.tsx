@@ -9,10 +9,19 @@ export default function HomePage() {
   // MOCK auth state (replace later with real auth)
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [name, setName] = useState("");
+  const [query, setQuery] = useState("");
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     setIsLoggedIn(false);
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!query.trim()) return;
+
+    router.push(`/searchResults?q=${encodeURIComponent(query)}`);
   };
 
   useEffect(() => {
@@ -93,16 +102,20 @@ export default function HomePage() {
 
         </section>
 
-        {/* Search */}
-        <div className="mb-10">
-          <div className="flex items-center bg-white/70 border border-[#d6ba73]/40 rounded-2xl px-4 py-3">
-            <input
-              placeholder="Search books, authors, genres..."
-              className="w-full bg-transparent outline-none text-sm"
-            />
-          </div>
+        {/* Search Bar */}
+        <div className="flex gap-3 mb-8">
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleSearch(e);
+              }
+            }}
+            placeholder="Search books, authors..."
+            className="flex-1 px-4 py-3 rounded-2xl bg-white/70 border border-[#d6ba73]/40 outline-none focus:border-[#8bbf9f]"
+          />
         </div>
-
         
         <div className="flex justify-center gap-10">
         <button

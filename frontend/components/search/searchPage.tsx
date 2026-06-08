@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 type Book = {
   external_id: string;
@@ -16,27 +16,42 @@ export default function SearchPage() {
   const [results, setResults] = useState<Book[]>([]);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const searchBooks = async () => {
-    if (!query.trim()) return;
+  
+  // fetch query from URL if the user was redirected from homepage search
+  useEffect(() => {
+    const fromHomePage = searchParams.get("q");
+    console.log("obtained query: ", fromHomePage);
+
+    if (fromHomePage) {
+      searchBooks(fromHomePage);
+    }
+  }, [searchParams]);
+
+  const searchBooks = async (q?: string) => {
+    let searchTerm = q ?? query;
+    if (!searchTerm) return;
 
     setLoading(true);
 
     try {
-      const res = await fetch(
-        `http://localhost:8000/books/search?q=${query}&type=book&limit=10`
-      );
 
+      const res = await fetch(
+        `http://localhost:8000/books/search?q=${searchTerm}&type=book&limit=10`
+      );
+      
       if (!res.ok) {
-        console.error("Search failed");
+        console.log("Search failed");
         setResults([]);
         return;
       }
 
       const data = await res.json();
+      console.log(data)
       setResults(data);
     } catch (err) {
-      console.error("Error:", err);
+      console.log("Error:", err);
       setResults([]);
     } finally {
       setLoading(false);
@@ -50,6 +65,15 @@ export default function SearchPage() {
         {/* Header */}
         <h1 className="text-3xl font-semibold mb-6">Search Books</h1>
 
+        <div className="absolute top-10 right-32">
+          <button
+            onClick={() => router.back()}
+            className="bg-[#8bbf9f] text-white px-6 py-3 rounded-2xl shadow-md hover:scale-105 transition"
+          >
+            Back
+          </button>
+        </div>
+
         {/* Search Bar */}
         <div className="flex gap-3 mb-8">
           <input
@@ -57,7 +81,7 @@ export default function SearchPage() {
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                searchBooks();
+                searchBooks(query);
               }
             }}
             placeholder="Search books, authors..."
@@ -65,7 +89,7 @@ export default function SearchPage() {
           />
 
           <button
-            onClick={searchBooks}
+            onClick={() => searchBooks()}
             className="bg-[#8bbf9f] text-white px-5 py-3 rounded-2xl shadow-md hover:scale-105 transition"
           >
             Search

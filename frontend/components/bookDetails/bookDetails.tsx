@@ -11,7 +11,6 @@ export default function BookDetailsPage({ id }: Props) {
   const router = useRouter();
   const [book, setBook] = useState<any>(null);
   const [status, setStatus] = useState("saved");
-  const [name, setName] = useState<any>(null);
 
   async function getAuthorName(authorKey: string) {
     if (!authorKey) return "Unknown Author";
@@ -88,7 +87,7 @@ export default function BookDetailsPage({ id }: Props) {
               <div className="h-[360px] rounded-3xl overflow-hidden shadow-sm">
                 <img
                   src={book?.cover_url || "/fallback-cover.jpg"}
-                  alt={book?.title || "Book cover"}
+                  alt={book?.title || "No cover"}
                   className="w-full h-full object-cover"
                 />
               </div>
