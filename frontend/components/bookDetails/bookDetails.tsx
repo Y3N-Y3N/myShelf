@@ -10,7 +10,7 @@ type Props = {
 export default function BookDetailsPage({ id }: Props) {
   const router = useRouter();
   const [book, setBook] = useState<any>(null);
-  const [status, setStatus] = useState("saved");
+  const [status, setStatus] = useState("");
 
   async function getAuthorName(authorKey: string) {
     if (!authorKey) return "Unknown Author";
@@ -20,6 +20,40 @@ export default function BookDetailsPage({ id }: Props) {
 
     return data?.name || "Unknown Author";
   }
+
+  const saveBook = async (book: any) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      router.push("/auth/login")
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:8000/saved-books/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+          title: book.title,
+          author: book.author,
+          cover_url: book.cover_url,
+          external_id: book.external_id,
+        }),
+      });
+
+      if (!res.ok) {
+        console.log("Failed to save book");
+        return;
+      }
+
+      setStatus("Saved")
+    } catch (err) {
+      console.error("Error saving book:", err);
+    }
+  };
 
   function mapOpenLibraryBook(data: any) {
     return {
@@ -96,7 +130,9 @@ export default function BookDetailsPage({ id }: Props) {
               <div className="mt-5 space-y-3">
 
                 {/* Save button */}
-                <button className="w-full bg-[#8bbf9f] text-white py-3 rounded-2xl font-medium shadow-sm hover:shadow-md hover:bg-[#7aac94] transition">
+                <button 
+                  onClick={() => saveBook(book)}
+                  className="w-full bg-[#8bbf9f] text-white py-3 rounded-2xl font-medium shadow-sm hover:shadow-md hover:bg-[#7aac94] transition">
                   Save to Shelf
                 </button>
 
@@ -106,6 +142,7 @@ export default function BookDetailsPage({ id }: Props) {
                   onChange={(e) => setStatus(e.target.value)}
                   className="w-full px-4 py-3 rounded-2xl bg-white/80 border border-[#d6ba73]/30 outline-none text-sm"
                 >
+                  <option value="">Not Saved</option>
                   <option value="saved">Saved</option>
                   <option value="reading">Reading</option>
                   <option value="read">Read</option>

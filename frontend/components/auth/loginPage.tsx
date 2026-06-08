@@ -49,7 +49,7 @@ export default function LoginPage() {
         </h1>
 
         <p className="text-center text-sm opacity-70 mb-6">
-          sign in to access your shelf
+          Sign in to access your shelf and save books
         </p>
 
         {/* Form */}

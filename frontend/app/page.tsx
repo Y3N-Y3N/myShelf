@@ -3,8 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
 
-
-
 export default function HomePage() {
   // MOCK auth state (replace later with real auth)
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -33,8 +31,6 @@ export default function HomePage() {
         return;
       }
       
-      console.log("Token:", token);
-
       const res = await fetch("http://localhost:8000/users/me", {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -61,13 +57,20 @@ export default function HomePage() {
           <h1 className="text-3xl font-semibold tracking-wide">
             MyShelf
           </h1>
-          { isLoggedIn &&
+          { isLoggedIn ?
             <button
                 onClick={handleLogout}
                 className="bg-[#8bbf9f] text-white px-5 py-3 rounded-full shadow-lg hover:scale-105 transition"
               >
                 Logout
-            </button> }
+            </button> :
+            <button
+                onClick={() => router.push("/auth/login")}
+                className="bg-[#8bbf9f] text-white px-5 py-3 rounded-full shadow-lg hover:scale-105 transition"
+              >
+                Login
+            </button>
+          }
         </header>
 
         {/* Hero */}
@@ -118,24 +121,24 @@ export default function HomePage() {
         </div>
         
         <div className="flex justify-center gap-10">
-        <button
-            onClick={() => {
-            if (isLoggedIn) {
-                router.push("/shelf")
-            } else {
-                router.push("/auth/login")
-            }
-            }}
-            className="bg-[#8bbf9f] text-white px-5 py-3 rounded-full shadow-lg hover:scale-105 transition"
-        >
-            {isLoggedIn ? "Continue to shelf ->": "Login"}
-        </button>
-        {isLoggedIn &&
-          <button onClick={() => { router.push("/recommendations/12345") } }
-            className="bg-[#8bbf9f] text-white px-5 py-3 rounded-full shadow-lg hover:scale-105 transition">
-              Find me a book!
-          </button>
+        { isLoggedIn &&
+          <button
+              onClick={() => {
+              if (isLoggedIn) {
+                  router.push("/shelf")
+              } 
+              }}
+              className="bg-[#8bbf9f] text-white px-5 py-3 rounded-full shadow-lg hover:scale-105 transition"
+          >
+              {"Continue to shelf ->"}
+          </button> 
         }
+          {isLoggedIn &&
+            <button onClick={() => { router.push("/recommendations/12345") } }
+              className="bg-[#8bbf9f] text-white px-5 py-3 rounded-full shadow-lg hover:scale-105 transition">
+                Find me a book!
+            </button>
+          }
         </div>
         
       </div>

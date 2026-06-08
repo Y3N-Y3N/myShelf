@@ -134,9 +134,6 @@ export default function SearchPage() {
                     {book.author || "Unknown Author"}
                   </p>
 
-                  <p className="text-xs mt-1 opacity-60">
-                    {book.genre || "Unknown Genre"}
-                  </p>
                 </div>
               </div>
             </div>
