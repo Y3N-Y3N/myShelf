@@ -11,8 +11,9 @@ class SavedBook(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
   
     external_id = Column(String, index=True)
-
+    genre = Column(String)
     title = Column(String)
+    year = Column(String)
     author = Column(String)
     cover_url = Column(String, nullable=True)
 

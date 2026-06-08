@@ -3,6 +3,8 @@ from typing import Optional
 
 class SavedBookCreate(BaseModel):
     external_id: str
+    year: str
+    genre: str
     title: str
     author: str
     cover_url: Optional[str] = None
@@ -14,6 +16,8 @@ class SavedBookUpdate(BaseModel):
 class SavedBookResponse(BaseModel):
     id: int
     external_id: str
+    year: str
+    genre: str
     title: str
     author: str
     cover_url: str | None

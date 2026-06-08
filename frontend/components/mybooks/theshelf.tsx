@@ -1,76 +1,75 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
-type BookStatus = "saved" | "read";
+type BookStatus = "saved" | "read" | "reading";
 
 type Book = {
-  id: number;
-  title: string;
-  author: string;
-  genre: string;
-  year: number;
-  status: BookStatus;
+  id: 0,
+  external_id: string,
+  genre: string
+  title: string,
+  year: string,
+  author: string,
+  cover_url: string,
+  status: BookStatus | "all",
+  rating: 0
 };
 
-const mockBooks: Book[] = [
-  {
-    id: 1,
-    title: "Atomic Habits",
-    author: "James Clear",
-    genre: "Self-Help",
-    year: 2018,
-    status: "read",
-  },
-  {
-    id: 2,
-    title: "Dune",
-    author: "Frank Herbert",
-    genre: "Sci-Fi",
-    year: 1965,
-    status: "saved",
-  },
-  {
-    id: 3,
-    title: "Deep Work",
-    author: "Cal Newport",
-    genre: "Productivity",
-    year: 2016,
-    status: "read",
-  },
-  {
-    id: 4,
-    title: "The Alchemist",
-    author: "Paulo Coelho",
-    genre: "Fiction",
-    year: 1988,
-    status: "saved",
-  },
-];
 export default function MyBooksPage() {
   const [filter, setFilter] = useState<"all" | BookStatus>("all");
   const [search, setSearch] = useState("");
-  const filteredBooks = useMemo(() => {
-    
+  const [books, setBooks] = useState<Book[]>([]);
+  
+  async function retrieveBooks(): Promise<Book[]> {
 
-    const bookSelection = mockBooks.filter((book) => book.status === filter);
+  
+    const res = await fetch("http://localhost:8000/saved-books/", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    if (!res.ok) {
+      console.log("Failed to save book");
+      return [];
+    }
+    
+    let list = await res.json();
+    return list;
+  }
+
+  useEffect(() => {
+    const loadBooks = async () => {
+      const data = await retrieveBooks();
+      setBooks(data);
+    };
+
+    loadBooks();
+  }, []);
+
+  const filteredBooks = useMemo(() => {
+
+
+    const bookSelection = books.filter((book: Book) => book.status === filter);
     if (filter === "all") {
-        return mockBooks;
+      return books;
     }
     const query = search.toLowerCase();
 
     if (!query) {
-        return bookSelection;
+      return bookSelection;
     } else {
-        return bookSelection.filter((book) => {
-
-            return (
-                book.title.toLowerCase().includes(query) ||
-                book.author.toLowerCase().includes(query) ||
-                book.genre.toLowerCase().includes(query)
-            );
-        })
+      return bookSelection.filter((book) => {
+        return (
+            book.title.toLowerCase().includes(query) ||
+            book.author.toLowerCase().includes(query) ||
+            book.genre.toLowerCase().includes(query)
+        );
+      })
     }
   }, [filter, search]);
   
@@ -96,7 +95,7 @@ export default function MyBooksPage() {
             <button
               key={option}
               onClick={() =>
-                setFilter(option as "all" | "saved" | "read")
+                setFilter(option as "all" | "saved" | "read" | "reading")
               }
               className={`px-4 py-2 rounded-full text-sm font-medium transition border
                 ${

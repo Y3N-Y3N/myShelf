@@ -38,6 +38,8 @@ export default function BookDetailsPage({ id }: Props) {
         },
         body: JSON.stringify({
           title: book.title,
+          year: book.year,
+          genre: book.genre,
           author: book.author,
           cover_url: book.cover_url,
           external_id: book.external_id,

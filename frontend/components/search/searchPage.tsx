@@ -22,7 +22,6 @@ export default function SearchPage() {
   // fetch query from URL if the user was redirected from homepage search
   useEffect(() => {
     const fromHomePage = searchParams.get("q");
-    console.log("obtained query: ", fromHomePage);
 
     if (fromHomePage) {
       searchBooks(fromHomePage);

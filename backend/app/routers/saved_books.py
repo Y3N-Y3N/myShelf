@@ -13,7 +13,7 @@ router = APIRouter(prefix="/saved-books", tags=["Saved Books"])
 @router.post("/", response_model=SavedBookResponse)
 def save_book(book: SavedBookCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     
-    new_book = SavedBook(current_user.id, **book.model_dump())
+    new_book = SavedBook(user_id=current_user.id, **book.model_dump())
     db.add(new_book)
     db.commit()
     db.refresh(new_book)
