@@ -21,10 +21,46 @@ export default function MyBooksPage() {
   const [filter, setFilter] = useState<"all" | BookStatus>("all");
   const [search, setSearch] = useState("");
   const [books, setBooks] = useState<Book[]>([]);
-  
+  const [name, setName] = useState("");
+  const nameRegex = /.*s$/;
+
+  useEffect(() => {
+    async function getUser() {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        const router = useRouter();
+        router.push("/auth/login");
+        return;
+      }
+      
+      const res = await fetch("http://localhost:8000/users/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        const router = useRouter();
+        router.push("/auth/login");
+        return;
+      };
+
+      const curr_user = await res.json();
+      let theName = curr_user.name;
+      if (nameRegex.test(curr_user.name)) {
+        theName += "'";
+      } else {
+        theName += "'s"
+      }
+      setName(theName);
+    }
+
+    getUser()
+  }, []);
+
   async function retrieveBooks(): Promise<Book[]> {
 
-  
     const res = await fetch("http://localhost:8000/saved-books/", {
       method: "GET",
       headers: {
@@ -34,7 +70,7 @@ export default function MyBooksPage() {
     });
 
     if (!res.ok) {
-      console.log("Failed to save book");
+      console.log("Failed to retrieve books");
       return [];
     }
     
@@ -53,11 +89,9 @@ export default function MyBooksPage() {
 
   const filteredBooks = useMemo(() => {
 
-
-    const bookSelection = books.filter((book: Book) => book.status === filter);
-    if (filter === "all") {
-      return books;
-    }
+    const bookSelection =
+      filter === "all" ? books : books.filter((book: Book) => book.status === filter);
+    
     const query = search.toLowerCase();
 
     if (!query) {
@@ -71,7 +105,7 @@ export default function MyBooksPage() {
         );
       })
     }
-  }, [filter, search]);
+  }, [books, filter, search]);
   
   const router = useRouter();
   return (
@@ -81,7 +115,7 @@ export default function MyBooksPage() {
         {/* Header */}
         <section className="mb-10 text-left">
           <h1 className="text-3xl font-bold mb-2">
-            My Shelf
+            {name} Shelf
           </h1>
 
           <p className="text-sm opacity-70">
@@ -110,18 +144,19 @@ export default function MyBooksPage() {
         </div>
         
         <div className="mb-8">
-  <div className="flex items-center bg-white/70 border border-[#d6ba73]/40 rounded-2xl px-4 py-3 shadow-sm">
-    
-    <input
-      value={search}
-      onChange={(e) => setSearch(e.target.value)}
-      placeholder="Search books, authors, genres..."
-      className="w-full bg-transparent outline-none text-sm"
-    />
+          <div className="flex items-center bg-white/70 border border-[#d6ba73]/40 rounded-2xl px-4 py-3 shadow-sm">
+            
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search books, authors, genres..."
+              className="w-full bg-transparent outline-none text-sm"
+            />
 
-    <span className="text-[#8bbf9f] text-sm">🔍</span>
-  </div>
-</div>
+            <span className="text-[#8bbf9f] text-sm">🔍</span>
+          </div>
+        </div>
+
         {/* GRID BOOKS (refactored design) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
 
@@ -129,7 +164,7 @@ export default function MyBooksPage() {
             <div
               key={book.id}
               onClick={() =>
-                router.push(`/bookDetails/${book.title}`)
+                router.push(`/bookDetails/${book.external_id.replace("/works", "")}`)
               }
               className="cursor-pointer bg-white/60 backdrop-blur border border-[#d6ba73]/30 rounded-2xl p-5 shadow-sm hover:shadow-md hover:-translate-y-1 transition"
             >

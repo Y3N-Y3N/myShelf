@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
 
 export default function HomePage() {
-  // MOCK auth state (replace later with real auth)
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [name, setName] = useState("");
   const [query, setQuery] = useState("");

@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 
 from app.database.database import get_db
 from app.schemas.book import SavedBookCreate, SavedBookResponse, SavedBookUpdate
@@ -14,9 +15,16 @@ router = APIRouter(prefix="/saved-books", tags=["Saved Books"])
 def save_book(book: SavedBookCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     
     new_book = SavedBook(user_id=current_user.id, **book.model_dump())
-    db.add(new_book)
-    db.commit()
-    db.refresh(new_book)
+    try:
+        db.add(new_book)
+        db.commit()
+        db.refresh(new_book)
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=409,
+            detail="Book already saved"
+        )
 
     return new_book
 
@@ -52,7 +60,7 @@ def update_saved_book(
     if not book:
         raise HTTPException(
         status_code=404,
-        detail="Saved book not found"
+        detail="Book not in shelf"
     )
 
     for key, value in data.model_dump(exclude_unset=True).items():

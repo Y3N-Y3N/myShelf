@@ -11,6 +11,11 @@ export default function BookDetailsPage({ id }: Props) {
   const router = useRouter();
   const [book, setBook] = useState<any>(null);
   const [status, setStatus] = useState("");
+  const [popup, setPopup] = useState<{
+    message: string; 
+    type: "success" | "error" | null;
+    visible: boolean;}
+    | null>(null);
 
   async function getAuthorName(authorKey: string) {
     if (!authorKey) return "Unknown Author";
@@ -21,6 +26,18 @@ export default function BookDetailsPage({ id }: Props) {
     return data?.name || "Unknown Author";
   }
 
+  const showPopup = (message: string, type: "success" | "error") => {
+    setPopup({ message, type, visible: true });
+    
+    setTimeout(() => {
+      setPopup((prev) => (prev ? { ...prev, visible: false } : null));
+    }, 1500);
+
+    setTimeout(() => {
+      setPopup(null);
+    }, 2000); 
+  };
+
   const saveBook = async (book: any) => {
     const token = localStorage.getItem("token");
 
@@ -28,6 +45,8 @@ export default function BookDetailsPage({ id }: Props) {
       router.push("/auth/login")
       return;
     }
+    
+    console.log(book);
 
     try {
       const res = await fetch("http://localhost:8000/saved-books/", {
@@ -39,7 +58,7 @@ export default function BookDetailsPage({ id }: Props) {
         body: JSON.stringify({
           title: book.title,
           year: book.year,
-          genre: book.genre,
+          genre: book.genre || book.category || "General",
           author: book.author,
           cover_url: book.cover_url,
           external_id: book.external_id,
@@ -48,36 +67,40 @@ export default function BookDetailsPage({ id }: Props) {
 
       if (!res.ok) {
         console.log("Failed to save book");
-        return;
+        showPopup("Book already saved!", "error");
+      } else {
+        setStatus("saved");
+        showPopup("Book Saved!", "success");
       }
-
-      setStatus("Saved")
     } catch (err) {
       console.error("Error saving book:", err);
     }
   };
 
-  function mapOpenLibraryBook(data: any) {
+  async function mapOpenLibraryBook(data: any) {
+    console.log(data);
     return {
+      external_id: data.key || "unknown", 
+
       title: data.title || "Unknown Title",
 
       author:
-        getAuthorName(data.authors?.[0]?.author?.key) ||
+        (await getAuthorName(data.authors?.[0]?.author?.key)) ||
         "Unknown Author",
 
-      category:
-        data.subjects?.[0] || "General",
+      genre: data.subjects?.[0] || "General",
+
+      description: typeof data.description === "string"
+        ? data.description
+        : data.description?.value || "No description available",
 
       year: data.created?.value
-        ? new Date(data.created.value).getFullYear()
+        ? new Date(data.created.value).getFullYear().toString() 
         : "Unknown",
-
-      description:
-        "No description available from Open Library. This is a placeholder summary for display purposes.",
 
       cover_url: data.covers?.[0]
         ? `https://covers.openlibrary.org/b/id/${data.covers[0]}-L.jpg`
-        : null
+        : null,
     };
   }
   
@@ -88,8 +111,9 @@ export default function BookDetailsPage({ id }: Props) {
       );
 
       const data = await res.json();
-      console.log(data)
-      setBook(mapOpenLibraryBook(data));
+      const mappedBook = await mapOpenLibraryBook(data);
+      console.log(mappedBook);
+      setBook(mappedBook);
     }
 
     fetchBook();
@@ -102,6 +126,21 @@ export default function BookDetailsPage({ id }: Props) {
 
   return (
     <main className="min-h-screen bg-[#f5e0b7] text-[#4a4542] px-6 py-10">
+      {popup && (
+        <div className="fixed inset-0 flex items-center justify-center z-[9999] pointer-events-none">
+          
+          <div
+            className={`px-6 py-3 rounded-2xl shadow-lg text-white text-sm font-medium transition-all duration-300
+              ${popup.type === "success" ? "bg-[#8bbf9f]" : "bg-red-300"}
+              ${popup.visible ? "opacity-100 scale-100" : "opacity-0 scale-90"}
+            `}
+          >
+            {popup.message}
+          </div>
+
+        </div>
+      )}
+
       <div className="max-w-5xl mx-auto">
 
         {/* Back Button */}
@@ -133,22 +172,16 @@ export default function BookDetailsPage({ id }: Props) {
 
                 {/* Save button */}
                 <button 
+                  disabled={!book}
                   onClick={() => saveBook(book)}
                   className="w-full bg-[#8bbf9f] text-white py-3 rounded-2xl font-medium shadow-sm hover:shadow-md hover:bg-[#7aac94] transition">
                   Save to Shelf
                 </button>
 
-                {/* Dropdown */}
-                <select
-                  value={status}
-                  onChange={(e) => setStatus(e.target.value)}
-                  className="w-full px-4 py-3 rounded-2xl bg-white/80 border border-[#d6ba73]/30 outline-none text-sm"
-                >
-                  <option value="">Not Saved</option>
-                  <option value="saved">Saved</option>
-                  <option value="reading">Reading</option>
-                  <option value="read">Read</option>
-                </select>
+                {/* Status */}
+                <div className="w-full px-4 py-3 rounded-2xl bg-white/80 border border-[#d6ba73]/30 text-sm text-center font-medium">
+                  {status || "Not Saved"}
+                </div>
               </div>
             </div>
 
@@ -169,7 +202,7 @@ export default function BookDetailsPage({ id }: Props) {
               {/* Tags */}
               <div className="flex items-center gap-3 flex-wrap mb-6">
                 <span className="px-4 py-2 rounded-full bg-[#8bbf9f]/20 text-sm">
-                  {book.category}
+                  {book.genre}
                 </span>
 
                 <span className="px-4 py-2 rounded-full bg-[#d6ba73]/30 text-sm">
