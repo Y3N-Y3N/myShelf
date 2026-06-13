@@ -61,7 +61,7 @@ export default function MyBooksPage() {
 
   async function retrieveBooks(): Promise<Book[]> {
 
-    const res = await fetch("http://myshelf-d117.onrender.com/saved-books/", {
+    const res = await fetch("https://myshelf-d117.onrender.com/saved-books/", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
