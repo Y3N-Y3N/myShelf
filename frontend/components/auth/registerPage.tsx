@@ -13,7 +13,7 @@ export default function SignUpPage() {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const response = await fetch("http://myshelf-d117.onrender.com/users/register", {
+    const response = await fetch("https://myshelf-d117.onrender.com/users/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -31,7 +31,7 @@ export default function SignUpPage() {
       return;
     } 
 
-    const autoLogin = await fetch("http://myshelf-d117.onrender.com/users/login", {
+    const autoLogin = await fetch("https://myshelf-d117.onrender.com/users/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
