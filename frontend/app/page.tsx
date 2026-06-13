@@ -30,7 +30,7 @@ export default function HomePage() {
         return;
       }
       
-      const res = await fetch("http://localhost:8000/users/me", {
+      const res = await fetch("https://myshelf-d117.onrender.com/users/me", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
