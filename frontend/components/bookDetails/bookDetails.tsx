@@ -49,7 +49,7 @@ export default function BookDetailsPage({ id }: Props) {
     console.log(book);
 
     try {
-      const res = await fetch("http://localhost:8000/saved-books/", {
+      const res = await fetch("http://myshelf-d117.onrender.com/saved-books/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

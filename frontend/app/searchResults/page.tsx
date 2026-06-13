@@ -6,7 +6,17 @@ export const metadata: Metadata = {
   description: "Search for your page",
 };
 
-export default async function searchPage() {
-  
-  return <SearchPage/>
+export default async function searchPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
+  const params = await searchParams;
+
+  return <SearchPage initialQuery={params.q} />;
 }
+
+// export default async function searchPage() {
+  
+//   return <SearchPage/>
+// }

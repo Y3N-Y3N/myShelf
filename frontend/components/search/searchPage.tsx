@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 type Book = {
   external_id: string;
@@ -11,22 +11,25 @@ type Book = {
   cover_url?: string;
 };
 
-export default function SearchPage() {
+type Props = {
+  initialQuery?: string;
+};
+
+export default function SearchPage({ initialQuery }: Props) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Book[]>([]);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const searchParams = useSearchParams();
-
   
   // fetch query from URL if the user was redirected from homepage search
   useEffect(() => {
-    const fromHomePage = searchParams.get("q");
-
+    const fromHomePage = initialQuery;
+    console.log(initialQuery)
     if (fromHomePage) {
+      setQuery(initialQuery);
       searchBooks(fromHomePage);
     }
-  }, [searchParams]);
+  }, [initialQuery]);
 
   const searchBooks = async (q?: string) => {
     let searchTerm = q ?? query;
@@ -37,7 +40,7 @@ export default function SearchPage() {
     try {
 
       const res = await fetch(
-        `http://localhost:8000/books/search?q=${searchTerm}&type=book&limit=10`
+        `https://myshelf-d117.onrender.com/books/search?q=${searchTerm}&type=book&limit=10`
       );
       
       if (!res.ok) {

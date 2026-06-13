@@ -12,7 +12,7 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const login = await fetch("http://localhost:8000/users/login", {
+    const login = await fetch("https://myshelf-d117.onrender.com/users/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

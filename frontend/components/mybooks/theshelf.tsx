@@ -34,7 +34,7 @@ export default function MyBooksPage() {
         return;
       }
       
-      const res = await fetch("http://localhost:8000/users/me", {
+      const res = await fetch("https://myshelf-d117.onrender.com/users/me", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -61,7 +61,7 @@ export default function MyBooksPage() {
 
   async function retrieveBooks(): Promise<Book[]> {
 
-    const res = await fetch("http://localhost:8000/saved-books/", {
+    const res = await fetch("http://myshelf-d117.onrender.com/saved-books/", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
