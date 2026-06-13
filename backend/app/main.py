@@ -13,8 +13,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
-        "https://my-shelf-psi.vercel.app/",
-        "https://myshelf-d117.onrender.com"
+        "https://my-shelf-psi.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
