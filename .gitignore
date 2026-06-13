@@ -49,3 +49,6 @@ pnpm-debug.log*
 
 # KEYS
 *.pem
+
+# vercel config
+.vercel/
